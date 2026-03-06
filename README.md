@@ -1,26 +1,26 @@
 # Cyberpunk Space Invaders
 
-Ein einfaches, lokales Space Invaders im Cyberpunk-Stil ohne externe Abhängigkeiten.
+A simple, local Space Invaders clone with a Cyberpunk aesthetic, built without any external dependencies.
 
-## Projektstruktur
+## Project Structure
 
-Das Projekt besteht aus drei Hauptdateien, die alle direkt zusammenarbeiten:
+The project consists of three main files that work together directly:
 
-- `index.html`: Enthält die Grundstruktur der Seite. Sie definiert das `<canvas>`-Element, auf dem das eigentliche Spiel gezeichnet wird, sowie drei UI-Overlay-Container (`hud`, `start-screen`, `game-over-screen`), die über dem Canvas liegen.
-- `style.css`: Verleiht dem Spiel den Cyberpunk-Look. Hier sind Neon-Farben, Glow-Effekte (Text-Shadow / Box-Shadow), der CRT-Scanline-Effekt sowie die Glitch-Animationen der Titeltexte definiert. Die UI ist modern und atmosphärisch gestaltet.
-- `script.js`: Beinhaltet die gesamte Spiellogik. Es teilt sich prinzipiell in Rendering, Logik, UI-Schnittstelle und Datenspeicherung auf.
+- `index.html`: Contains the basic structure of the page. It defines the `<canvas>` element (where the actual game is drawn) and three UI overlay containers (`hud`, `start-screen`, `game-over-screen`) that sit on top of the canvas.
+- `style.css`: Gives the game its Cyberpunk look. This includes neon colors, glow effects (text-shadow / box-shadow), the CRT scanline effect, and the glitch animations for the title screens. The UI is designed to be modern and atmospheric.
+- `script.js`: Contains all the game logic. It is roughly divided into rendering, logic, UI interfacing, and data storage.
 
-## Wie man das Spiel lokal startet
+## How to Play Locally
 
-1. Öffne den Ordner, der diese Dateien enthält (z. B. `CyberSpaceInvaders`).
-2. Mache einen **Doppelklick auf die Datei `index.html`** oder ziehe sie per Drag & Drop in deinen Browser (Chrome, Firefox, Safari, Edge).
-3. Das Spiel funktioniert lokal über das `file://` Protokoll. Ein lokaler Webserver ist **nicht** zwingend erforderlich, da wir keine externen Module oder APIs abfragen, die von CORS-Richtlinien blockiert würden.
+1. Open the folder containing these files (e.g., `CyberSpaceInvaders`).
+2. **Double-click the `index.html` file** or drag and drop it into your web browser (Chrome, Firefox, Safari, Edge).
+3. The game runs locally via the `file://` protocol. A local web server is **not** required, as we aren't fetching any external modules or APIs that would be blocked by CORS policies.
 
-## Erklärung des Codes (`script.js`)
+## Code Explanation (`script.js`)
 
-Die wichtigste Datei für das Spielverhalten ist `script.js`. Sie ist so strukturiert, dass sie jederzeit leicht erweiterbar ist:
+The most important file for the game's behavior is `script.js`. It is structured to be easily expandable:
 
-1. **Gameplay & Logik**: Die Objektklassen `Player`, `Enemy`, `Bullet` und `Particle` steuern das Verhalten der einzelnen Elemente auf dem Bildschirm. Jede Klasse hat eine `update()` Methode für die Logik (Bewegung, Kollision). Die Haupt-Funktionen `checkCollisions()` und `updateEnemySwarm()` steuern das übergreifende Spielgeschehen und Wellen-Management.
-2. **Rendering / Zeichnen**: Statt externe Bilder zu laden, werden alle Grafiken lokal direkt im HTML5-Canvas gerendert. Dafür sorgt die Methode `.draw()` an jedem Objekt. Der Neon-Effekt der Objekte wird durch `ctx.shadowBlur` und `ctx.shadowColor` (Canvas-Boardmittel) erzeugt.
-3. **UI (User Interface)**: Anstatt Texte via Canvas zu zeichnen, liegen die Startmenüs und Highscores als sauberes HTML-Gitter über dem Spiel. Funktionen wie `updateHUD()` und `gameOver()` blenden über `classList.add('hidden')` bzw. `.remove('hidden')` die korrekten HTML-Menüs und Texte direkt aus bzw. ein.
-4. **LocalStorage (Speichern)**: Der Highscore wird permanent gespeichert. Gleich am Anfang von `script.js` wird versucht, den Highscore aus `localStorage.getItem('cyberInvadersHiScore')` zu lesen. Wenn der Spieler stirbt, wird im `gameOver()` geprüft, ob der Score höher als der Highscore ist. Falls ja, wird mit `localStorage.setItem(...)` der neueste Wert fest im Browser verankert.
+1. **Gameplay & Logic**: The object classes `Player`, `Enemy`, `Bullet`, and `Particle` control the behavior of individual elements on the screen. Each class has an `update()` method for its logic (movement, collision). The main functions `checkCollisions()` and `updateEnemySwarm()` manage the overall game loop and enemy waves.
+2. **Rendering / Drawing**: Instead of loading external images, all graphics are rendered locally directly onto the HTML5 Canvas. The `.draw()` method on each object handles this. The neon glow effect is created using built-in canvas features (`ctx.shadowBlur` and `ctx.shadowColor`).
+3. **UI (User Interface)**: Instead of drawing texts via the canvas, the start menus and high scores hover over the game as a clean HTML grid. Functions like `updateHUD()` and `gameOver()` hide or show the correct HTML menus and texts directly using `classList.add('hidden')` and `.remove('hidden')`.
+4. **LocalStorage (Saving)**: The high score is stored permanently. At the very beginning of `script.js`, it attempts to read the high score from `localStorage.getItem('cyberInvadersHiScore')`. When the player dies, `gameOver()` checks if the score is higher than the high score. If it is, `localStorage.setItem(...)` securely anchors the newest value in the browser.
