@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Space Invaders</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="crt-overlay"></div>
+    
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <div id="hud" class="ui-layer hidden">
+            <div class="hud-item hud-score">SCORE <span id="scoreDisplay" class="value">00000</span></div>
+            <div class="hud-item hud-hiscore">HI-SCORE <span id="hiScoreDisplay" class="value">00000</span></div>
+            <div class="hud-item hud-lives">LIVES <span id="livesDisplay" class="value">♥♥♥</span></div>
+        </div>
+
+        <div id="start-screen" class="ui-layer active flex-center">
+            <h1 class="glitch-title" data-text="CYBER INVADERS">CYBER INVADERS</h1>
+            <p class="subtitle typing-effect">SYSTEM READY...</p>
+            
+            <div class="controls-panel">
+                <h3>CONTROLS</h3>
+                <div class="control-row">
+                    <kbd>A</kbd> <kbd>D</kbd> <span>oder</span> <kbd>←</kbd> <kbd>→</kbd> <span class="action">BEWEGEN</span>
+                </div>
+                <div class="control-row">
+                    <kbd>SPACE</kbd> <span class="action">SCHIESSEN</span>
+                </div>
+            </div>
+            
+            <button id="startBtn" class="cyber-btn">INITIALIZE COMBAT</button>
+        </div>
+
+        <div id="game-over-screen" class="ui-layer hidden flex-center">
+            <h2 class="glitch-title danger" data-text="SYSTEM FAILURE">SYSTEM FAILURE</h2>
+            
+            <div class="stats-panel">
+                <div class="stat-row">FINAL SCORE: <span id="finalScoreDisplay" class="value">0</span></div>
+                <div id="newHiScoreMsg" class="stat-row highlight hidden">!!! NEW HIGH SCORE !!!</div>
+            </div>
+            
+            <button id="restartBtn" class="cyber-btn danger-btn">REBOOT SYSTEM</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
