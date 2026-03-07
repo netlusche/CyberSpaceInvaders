@@ -36,6 +36,7 @@ let lives = 3;
 let keys = {};
 let frameBuffer = 0; // For timing
 let maxEnemyBombs = 1;
+let hitPauseTimer = 0;
 
 // Entities arrays
 let player;
@@ -264,6 +265,7 @@ function startGame() {
     lives = 3;
     maxEnemyBombs = 1;
     enemySpeedX = 0.5; // reset speed
+    hitPauseTimer = 0;
     initEnemies();
     updateHUD();
 
@@ -315,16 +317,18 @@ function checkCollisions() {
         if (b.x < player.x + player.width &&
             b.x + b.width > player.x &&
             b.y < player.y + player.height &&
-            b.height + b.y > player.y) {
+            b.height + b.y > player.y &&
+            hitPauseTimer === 0) {
                 // Hit!
                 b.active = false;
                 lives--;
-                createParticles(player.x + player.width/2, player.y + player.height/2, 20, player.color);
-                updateHUD();
                 
-                if (lives <= 0) {
-                    gameOver();
-                }
+                // Huge explosion
+                createParticles(player.x + player.width/2, player.y + player.height/2, 40, '#ff003c'); // Red
+                createParticles(player.x + player.width/2, player.y + player.height/2, 40, '#ffff00'); // Yellow
+                
+                updateHUD();
+                hitPauseTimer = 60; // Pause game for 60 frames (1 second)
         }
     });
 
@@ -389,24 +393,48 @@ function gameLoop() {
         frameBuffer++;
         drawBackground();
         
-        // Update & Draw Player
-        player.update();
-        player.draw();
+        if (hitPauseTimer > 0) {
+            hitPauseTimer--;
+            
+            // Draw entities but don't update them (pauses the game action)
+            bullets.forEach(b => { b.draw(); });
+            enemyBullets.forEach(b => { b.draw(); });
+            enemies.forEach(e => { e.draw(); });
+            
+            // Update and draw particles for the explosion
+            particles.forEach(p => { p.update(); p.draw(); });
+            particles = particles.filter(p => p.life > 0);
+            
+            if (hitPauseTimer === 0) {
+                if (lives <= 0) {
+                    gameOver();
+                } else {
+                    // Respawn player
+                    player.x = canvas.width / 2 - player.width / 2;
+                    enemyBullets = []; // Clear enemy bullets to avoid spawn kill
+                }
+            }
+        } else {
+            // Normal Event Loop
+            // Update & Draw Player
+            player.update();
+            player.draw();
 
-        // Update & Draw Bullets
-        bullets.forEach(b => { b.update(); b.draw(); });
-        enemyBullets.forEach(b => { b.update(); b.draw(); });
+            // Update & Draw Bullets
+            bullets.forEach(b => { b.update(); b.draw(); });
+            enemyBullets.forEach(b => { b.update(); b.draw(); });
 
-        // Update & Draw Enemies
-        updateEnemySwarm();
-        enemies.forEach(e => { e.draw(); });
+            // Update & Draw Enemies
+            updateEnemySwarm();
+            enemies.forEach(e => { e.draw(); });
 
-        // Check all collisions
-        checkCollisions();
+            // Check all collisions
+            checkCollisions();
 
-        // Update & Draw Particles
-        particles.forEach(p => { p.update(); p.draw(); });
-        particles = particles.filter(p => p.life > 0);
+            // Update & Draw Particles
+            particles.forEach(p => { p.update(); p.draw(); });
+            particles = particles.filter(p => p.life > 0);
+        }
     }
     
     // Small ambient particles even on start screen if desired, but we'll stick to static CSS there.
